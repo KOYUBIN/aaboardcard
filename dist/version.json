@@ -1,6 +1,6 @@
 {
-  "web": 2,
-  "apk": 2,
+  "web": 3,
+  "apk": 3,
   "apkUrl": "https://github.com/KOYUBIN/aaboardcard/raw/main/dist/AA_post_maker.apk",
-  "notes": "프사 톤 테마, 앱 내 사진 선택, 업데이트 기능"
+  "notes": "릴스 메이커(사진·영상 클립 → MP4), 영상 저장"
 }

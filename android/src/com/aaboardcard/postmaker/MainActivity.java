@@ -15,8 +15,11 @@ import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,13 +29,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
-    static final int APK_VER = 2;          // AndroidManifest versionCode 와 같게
+    static final int APK_VER = 3;          // AndroidManifest versionCode 와 같게
     static final int BUNDLED_WEB = __WEBV__; // 앱에 들어있는 화면(index.html) 버전
     static final String BASE = "https://raw.githubusercontent.com/KOYUBIN/aaboardcard/main/dist/";
-    static final String ASSET_BASE = "file:///android_asset/";
+    static final String HOST = "appassets.androidplatform.net"; // 앱 내부 전용 주소(외부로 나가지 않음)
 
     private WebView web;
     private ValueCallback<Uri[]> pending;
@@ -46,10 +50,26 @@ public class MainActivity extends Activity {
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
-        s.setAllowFileAccess(true);
-        s.setAllowFileAccessFromFileURLs(true);
+        s.setMediaPlaybackRequiresUserGesture(false);
+        s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         s.setTextZoom(100);
-        web.setWebViewClient(new WebViewClient());
+        web.setWebViewClient(new WebViewClient() {
+            @Override public WebResourceResponse shouldInterceptRequest(WebView v, WebResourceRequest r) {
+                Uri u = r.getUrl();
+                if (!HOST.equals(u.getHost())) return null;
+                String p = u.getPath();
+                try {
+                    if (p == null || p.equals("/") || p.equals("/index.html"))
+                        return new WebResourceResponse("text/html", "utf-8", new ByteArrayInputStream(pageBytes()));
+                    if (p.startsWith("/fonts/") && !p.contains(".."))
+                        return new WebResourceResponse("font/woff2", null, getAssets().open(p.substring(1)));
+                } catch (Exception e) { }
+                return new WebResourceResponse("text/plain", "utf-8", 404, "Not Found", new HashMap<String, String>(), new ByteArrayInputStream(new byte[0]));
+            }
+            @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
+                return !HOST.equals(r.getUrl().getHost()); // 앱 화면 밖으로는 이동하지 않음
+            }
+        });
         web.setWebChromeClient(new WebChromeClient() {
             @Override public boolean onShowFileChooser(WebView w, ValueCallback<Uri[]> cb, FileChooserParams p) {
                 if (pending != null) pending.onReceiveValue(null);
@@ -85,17 +105,17 @@ public class MainActivity extends Activity {
         return o.toByteArray();
     }
 
-    void loadPage() {
-        String html = null;
+    byte[] pageBytes() throws Exception {
         try {
-            if (webVer() > BUNDLED_WEB) html = new String(readAll(new FileInputStream(cached())), "UTF-8");
-        } catch (Exception e) { html = null; }
-        try {
-            if (html == null || !html.contains("</html>")) html = new String(readAll(getAssets().open("index.html")), "UTF-8");
-        } catch (Exception e) { html = "<p>화면을 불러오지 못했습니다.</p>"; }
-        // 글꼴 등 상대 경로는 앱 안의 assets 를 가리키도록 한다
-        web.loadDataWithBaseURL(ASSET_BASE, html, "text/html", "UTF-8", null);
+            if (webVer() > BUNDLED_WEB) {
+                byte[] d = readAll(new FileInputStream(cached()));
+                if (new String(d, "UTF-8").contains("</html>")) return d;
+            }
+        } catch (Exception e) { }
+        return readAll(getAssets().open("index.html"));
     }
+
+    void loadPage() { web.loadUrl("https://" + HOST + "/index.html"); }
 
     void js(final String code) {
         runOnUiThread(new Runnable() { public void run() { web.evaluateJavascript(code, null); } });
@@ -183,23 +203,56 @@ public class MainActivity extends Activity {
     @Override public void onBackPressed() { moveTaskToBack(true); }
 
     class Bridge {
+        private final HashMap<Integer, Object[]> outs = new HashMap<Integer, Object[]>();
+        private int seq = 0;
+
+        private Object[] open(String name) throws Exception {
+            String n = name.toLowerCase();
+            boolean img = n.endsWith(".png"), vid = n.endsWith(".mp4") || n.endsWith(".webm");
+            String mime = img ? "image/png" : n.endsWith(".mp4") ? "video/mp4" : n.endsWith(".webm") ? "video/webm"
+                        : n.endsWith(".zip") ? "application/zip" : n.endsWith(".json") ? "application/json" : "application/octet-stream";
+            ContentValues v = new ContentValues();
+            v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
+            v.put(MediaStore.MediaColumns.MIME_TYPE, mime);
+            v.put(MediaStore.MediaColumns.RELATIVE_PATH, (img ? "Pictures" : vid ? "Movies" : "Download") + "/AABoardCard");
+            v.put(MediaStore.MediaColumns.IS_PENDING, 1);
+            String vol = MediaStore.VOLUME_EXTERNAL_PRIMARY;
+            Uri col = img ? MediaStore.Images.Media.getContentUri(vol) : vid ? MediaStore.Video.Media.getContentUri(vol) : MediaStore.Downloads.getContentUri(vol);
+            Uri u = getContentResolver().insert(col, v);
+            if (u == null) throw new Exception("insert");
+            return new Object[]{ u, getContentResolver().openOutputStream(u) };
+        }
+
+        private void close(Object[] o) throws Exception {
+            ((OutputStream) o[1]).close();
+            ContentValues v = new ContentValues();
+            v.put(MediaStore.MediaColumns.IS_PENDING, 0);
+            getContentResolver().update((Uri) o[0], v, null, null);
+        }
+
         @JavascriptInterface public String save(String name, String b64) {
             try {
-                byte[] d = Base64.decode(b64, Base64.DEFAULT);
-                boolean img = name.toLowerCase().endsWith(".png");
-                String mime = img ? "image/png" : name.endsWith(".zip") ? "application/zip" : name.endsWith(".json") ? "application/json" : "application/octet-stream";
-                ContentValues v = new ContentValues();
-                v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
-                v.put(MediaStore.MediaColumns.MIME_TYPE, mime);
-                v.put(MediaStore.MediaColumns.RELATIVE_PATH, (img ? "Pictures" : "Download") + "/AABoardCard");
-                Uri col = img ? MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-                              : MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-                Uri u = getContentResolver().insert(col, v);
-                if (u == null) return "fail";
-                OutputStream os = getContentResolver().openOutputStream(u);
-                os.write(d); os.close();
+                Object[] o = open(name);
+                ((OutputStream) o[1]).write(Base64.decode(b64, Base64.DEFAULT));
+                close(o);
                 return "ok";
             } catch (Exception e) { return "fail"; }
+        }
+
+        // 큰 파일(영상)은 나눠서 받는다
+        @JavascriptInterface public synchronized int saveBegin(String name) {
+            try { Object[] o = open(name); int id = ++seq; outs.put(id, o); return id; }
+            catch (Exception e) { return -1; }
+        }
+
+        @JavascriptInterface public synchronized String saveChunk(int id, String b64) {
+            try { ((OutputStream) outs.get(id)[1]).write(Base64.decode(b64, Base64.DEFAULT)); return "ok"; }
+            catch (Exception e) { return "fail"; }
+        }
+
+        @JavascriptInterface public synchronized String saveEnd(int id) {
+            try { close(outs.remove(id)); return "ok"; }
+            catch (Exception e) { return "fail"; }
         }
 
         @JavascriptInterface public void pick(final boolean multi) {

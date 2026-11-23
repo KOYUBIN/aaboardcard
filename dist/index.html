@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>인스타 게시글 메이커 · @aa_board_card</title>
+<title>AA 메이커 · 게시글·릴스 · @aa_board_card</title>
 <style>@font-face{font-family:Pretendard;font-weight:100 900;font-display:swap;src:url(fonts/PretendardVariable.woff2) format('woff2')}
 /* jua-[2]-400-normal */
 @font-face {
@@ -889,7 +889,7 @@ header h1 span{color:var(--ac)}
 .btn.sm{padding:4px 8px;font-size:12px}
 .sp{flex:1}
 main{display:grid;grid-template-columns:170px 1fr 380px;height:calc(100% - 58px)}
-#slides{border-right:1px solid var(--line);overflow:auto;padding:10px}
+#slides,#rScenes{border-right:1px solid var(--line);overflow:auto;padding:10px}
 .thumb{position:relative;margin-bottom:10px;border:2px solid transparent;border-radius:8px;cursor:pointer;overflow:hidden;background:#000}
 .thumb.on{border-color:var(--ac)}
 .thumb canvas{display:block;width:100%}
@@ -897,15 +897,27 @@ main{display:grid;grid-template-columns:170px 1fr 380px;height:calc(100% - 58px)
 .thumb .ops{position:absolute;right:4px;bottom:4px;display:none;gap:3px}
 .thumb:hover .ops{display:flex}
 .thumb .ops button{color:#fff;background:#000c;border:0;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:12px}
-#stage{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;min-width:0;min-height:0;gap:8px}
-#cv{max-width:100%;max-height:calc(100% - 30px);border-radius:6px;box-shadow:0 10px 40px #5a3d1a33;cursor:grab;touch-action:none}
+#stage,#rStage{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;min-width:0;min-height:0;gap:8px}
+#rcv{max-height:calc(100% - 70px)!important;cursor:default!important}
+#cv,#rcv{max-width:100%;max-height:calc(100% - 30px);border-radius:6px;box-shadow:0 10px 40px #5a3d1a33;cursor:grab;touch-action:none}
 #hint{color:var(--mut);font-size:12px}
-#side{border-left:1px solid var(--line);overflow:auto;background:var(--panel)}
-.tabs{display:flex;position:sticky;top:0;background:var(--panel);z-index:2;border-bottom:1px solid var(--line)}
-.tabs button{flex:1;background:none;border:0;padding:11px 4px;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent}
-.tabs button.on{color:var(--tx);border-color:var(--ac);font-weight:700}
-.pane{padding:14px;display:none}
-.pane.on{display:block}
+#side,#rSide{border-left:1px solid var(--line);overflow:auto;background:var(--panel)}
+.tabs,.rtabs{display:flex;position:sticky;top:0;background:var(--panel);z-index:2;border-bottom:1px solid var(--line)}
+.tabs button,.rtabs button{flex:1;background:none;border:0;padding:11px 4px;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent}
+.tabs button.on,.rtabs button.on{color:var(--tx);border-color:var(--ac);font-weight:700}
+.pane,.rpane{padding:14px;display:none}
+.pane.on,.rpane.on{display:block}
+body.reel .pOnly,body.reel #postMain{display:none!important}
+body:not(.reel) .rOnly{display:none!important}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:var(--panel2);border:0;padding:7px 14px;cursor:pointer;font-weight:600;color:var(--mut)}
+.seg button.on{background:var(--ac);color:#fff}
+.rctl{display:flex;gap:10px;align-items:center;width:min(100%,520px)}
+.rctl input{flex:1}
+#rOv{position:fixed;inset:0;background:#3a2f25cc;z-index:30;display:none;align-items:center;justify-content:center}
+#rOv>div{background:var(--panel);border-radius:14px;padding:22px;width:min(86vw,360px);text-align:center}
+#rBarOut{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:14px 0}
+#rBarIn{height:100%;width:0;background:var(--ac)}
 label{display:block;font-size:12px;color:var(--mut);margin:12px 0 4px}
 header select{width:auto!important}
 input[type=text],textarea,select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
@@ -930,11 +942,12 @@ ul.ck{padding-left:18px;line-height:1.8;margin:6px 0}
  header h1{display:none}.sp{display:none}
  header .btn{padding:9px 10px;font-size:13px;flex:1 1 auto}
  main{display:flex;flex-direction:column;height:auto}
- #stage{order:1;padding:10px}#cv{max-height:58vh}
- #slides{order:2;display:flex;gap:8px;overflow-x:auto;border:0;padding:8px 10px}
+ #stage,#rStage{order:1;padding:10px}#cv{max-height:58vh}#rcv{max-height:52vh!important}
+ #slides,#rScenes{order:2;display:flex;gap:8px;overflow-x:auto;border:0;padding:8px 10px}
  .thumb{flex:0 0 104px;margin:0}.thumb.on .ops{display:flex}.thumb .ops button{padding:5px 8px;font-size:14px}
- #side{order:3;border:0;overflow:visible}
- .tabs{top:var(--hh,0px)}
+ #side,#rSide{order:3;border:0;overflow:visible}
+ .tabs,.rtabs{top:var(--hh,0px)}
+ .seg{flex:1 1 100%}.seg button{flex:1}
  input[type=text],textarea,select{font-size:16px}
  .chip{padding:8px 12px;font-size:13px}
 }
@@ -942,8 +955,9 @@ ul.ck{padding-left:18px;line-height:1.8;margin:6px 0}
 </head>
 <body>
 <header>
-  <h1><img id="logo" alt="">게시글 <span>메이커</span></h1>
-  <select id="size" class="btn" title="캔버스 크기">
+  <h1><img id="logo" alt="">AA <span>메이커</span></h1>
+  <div class="seg" id="mode"><button data-m="post" class="on">게시글</button><button data-m="reel">릴스</button></div>
+  <select id="size" class="btn pOnly" title="캔버스 크기">
     <option value="4x5">피드 4:5 (1080×1350)</option>
     <option value="3x4">피드 3:4 (1080×1440)</option>
     <option value="9x16">릴스 커버·스토리 9:16</option>
@@ -954,16 +968,18 @@ ul.ck{padding-left:18px;line-height:1.8;margin:6px 0}
     <option value="night">테마: 나이트(홀덤)</option>
     <option value="cream">테마: 크림(일상·행사)</option>
   </select>
-  <label style="margin:0;display:flex;align-items:center;gap:5px;color:var(--tx)"><input type="checkbox" id="guide">안전영역</label>
+  <label class="pOnly" style="margin:0;display:flex;align-items:center;gap:5px;color:var(--tx)"><input type="checkbox" id="guide">안전영역</label>
   <span class="sp"></span>
-  <button class="btn" id="bSave">프로젝트 저장</button>
-  <button class="btn" id="bLoad">불러오기</button>
-  <button class="btn" id="bOne">현재 장 PNG</button>
-  <button class="btn pri" id="bAll">전체 ZIP 내보내기</button>
-  <button class="btn pri" id="bShare" hidden>사진첩 저장·공유</button>
+  <button class="btn pOnly" id="bSave">프로젝트 저장</button>
+  <button class="btn pOnly" id="bLoad">불러오기</button>
+  <button class="btn pOnly" id="bOne">현재 장 PNG</button>
+  <button class="btn pri pOnly" id="bAll">전체 ZIP 내보내기</button>
+  <span class="pOnly"><button class="btn pri" id="bShare" hidden>사진첩 저장·공유</button></span>
+  <span class="rOnly" id="rInfo" style="color:var(--mut);font-size:12px"></span>
+  <button class="btn pri rOnly" id="bMp4">MP4 내보내기</button>
   <input type="file" id="fLoad" accept=".json" hidden>
 </header>
-<main>
+<main id="postMain">
   <div id="slides"></div>
   <div id="stage">
     <canvas id="cv"></canvas>
@@ -1032,7 +1048,43 @@ ul.ck{padding-left:18px;line-height:1.8;margin:6px 0}
   </div>
 </main>
 
+
+<main id="reelMain" class="rOnly">
+  <div id="rScenes"></div>
+  <div id="rStage">
+    <canvas id="rcv"></canvas>
+    <div class="rctl"><button class="btn" id="rPlay">▶ 재생</button><input type="range" id="rSeek" min="0" max="1" step="0.01" value="0"><span id="rTime" style="font-size:12px;color:var(--mut);white-space:nowrap"></span></div>
+  </div>
+  <div id="rSide">
+    <div class="rtabs"><button data-t="sc" class="on">장면 편집</button><button data-t="add">장면 추가</button><button data-t="out">설정·내보내기</button></div>
+    <div class="rpane on" id="rp-sc"><div id="rFields"></div></div>
+    <div class="rpane" id="rp-add">
+      <h3 style="margin-top:0">장면 추가</h3>
+      <div class="chips" style="margin-top:8px"><span class="chip" id="rAddP">+ 사진 (여러 장)</span><span class="chip" id="rAddV">+ 영상 클립</span><span class="chip" id="rAddC">+ 카드(글자만)</span></div>
+      <input type="file" id="rfPhotos" accept="image/*" multiple hidden><input type="file" id="rfVideos" accept="video/*" multiple hidden>
+      <h3>게시글에서 가져오기</h3>
+      <div class="note">게시글 모드에서 만든 캐러셀 장들을 9:16 장면으로 바꿔 넣습니다.</div>
+      <div class="chips" style="margin-top:8px"><span class="chip" id="rImport">캐러셀 → 릴스 장면</span></div>
+      <h3>구성 팁</h3>
+      <ul class="ck"><li>첫 장면 2초: 큰 제목으로 훅</li><li>장면당 자막 한 줄</li><li>마지막: 질문·팔로우 카드</li><li>음악은 인스타에서 업로드할 때 추가</li></ul>
+    </div>
+    <div class="rpane" id="rp-out">
+      <label>해상도</label><select id="rRes"><option value="1080">1080×1920 (권장)</option><option value="720">720×1280 (빠름)</option></select>
+      <label>장면 전환</label><select id="rTrans"><option value="fade">부드럽게</option><option value="cut">바로 전환</option></select>
+      <label style="display:flex;gap:6px;align-items:center;color:var(--tx)"><input type="checkbox" id="rBar">상단 진행 막대</label>
+      <label style="display:flex;gap:6px;align-items:center;color:var(--tx)"><input type="checkbox" id="rBrand">프사·핸들 표시</label>
+      <div class="note">테마는 상단 테마 선택을 따릅니다. 영상 클립의 원본 소리는 들어가지 않습니다(무음 MP4).</div>
+      <button class="btn pri" id="rExport" style="margin-top:14px;width:100%">MP4 내보내기</button>
+    </div>
+  </div>
+</main>
+<div id="rOv"><div><b id="rOvMsg">영상 만드는 중…</b><div id="rBarOut"><div id="rBarIn"></div></div><button class="btn" id="rOvCancel">취소</button></div></div>
 <div id="toast"></div>
+<script>"use strict";var Mp4Muxer=(()=>{var we=Object.defineProperty,at=Object.getOwnPropertyDescriptor,nt=Object.getOwnPropertyNames,ot=Object.prototype.hasOwnProperty,ht=(e,t)=>{for(var s in t)we(e,s,{get:t[s],enumerable:!0})},lt=(e,t,s,r)=>{if(t&&typeof t=="object"||typeof t=="function")for(let a of nt(t))!ot.call(e,a)&&a!==s&&we(e,a,{get:()=>t[a],enumerable:!(r=at(t,a))||r.enumerable});return e},ft=e=>lt(we({},"__esModule",{value:!0}),e),ve=(e,t,s)=>{if(!t.has(e))throw TypeError("Cannot "+s)},i=(e,t,s)=>(ve(e,t,"read from private field"),s?s.call(e):t.get(e)),d=(e,t,s)=>{if(t.has(e))throw TypeError("Cannot add the same private member more than once");t instanceof WeakSet?t.add(e):t.set(e,s)},C=(e,t,s,r)=>(ve(e,t,"write to private field"),r?r.call(e,s):t.set(e,s),s),ut=(e,t,s,r)=>({set _(a){C(e,t,a,s)},get _(){return i(e,t,r)}}),m=(e,t,s)=>(ve(e,t,"access private method"),s),Re={};ht(Re,{ArrayBufferTarget:()=>qe,FileSystemWritableFileStreamTarget:()=>Xe,Muxer:()=>vi,StreamTarget:()=>Te});var p=new Uint8Array(8),z=new DataView(p.buffer),y=e=>[(e%256+256)%256],c=e=>(z.setUint16(0,e,!1),[p[0],p[1]]),dt=e=>(z.setInt16(0,e,!1),[p[0],p[1]]),Pe=e=>(z.setUint32(0,e,!1),[p[1],p[2],p[3]]),n=e=>(z.setUint32(0,e,!1),[p[0],p[1],p[2],p[3]]),mt=e=>(z.setInt32(0,e,!1),[p[0],p[1],p[2],p[3]]),x=e=>(z.setUint32(0,Math.floor(e/2**32),!1),z.setUint32(4,e,!1),[p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7]]),ge=e=>(z.setInt16(0,2**8*e,!1),[p[0],p[1]]),A=e=>(z.setInt32(0,2**16*e,!1),[p[0],p[1],p[2],p[3]]),ye=e=>(z.setInt32(0,2**30*e,!1),[p[0],p[1],p[2],p[3]]),E=(e,t=!1)=>{let s=Array(e.length).fill(null).map((r,a)=>e.charCodeAt(a));return t&&s.push(0),s},se=e=>e&&e[e.length-1],Ce=e=>{let t;for(let s of e)(!t||s.presentationTimestamp>t.presentationTimestamp)&&(t=s);return t},O=(e,t,s=!0)=>{let r=e*t;return s?Math.round(r):r},Le=e=>{let t=e*(Math.PI/180),s=Math.cos(t),r=Math.sin(t);return[s,r,0,-r,s,0,0,0,1]},Ve=Le(0),je=e=>[A(e[0]),A(e[1]),ye(e[2]),A(e[3]),A(e[4]),ye(e[5]),A(e[6]),A(e[7]),ye(e[8])],X=e=>!e||typeof e!="object"?e:Array.isArray(e)?e.map(X):Object.fromEntries(Object.entries(e).map(([t,s])=>[t,X(s)])),V=e=>e>=0&&e<2**32,v=(e,t,s)=>({type:e,contents:t&&new Uint8Array(t.flat(10)),children:s}),w=(e,t,s,r,a)=>v(e,[y(t),Pe(s),r??[]],a),pt=e=>{let t=512;return e.fragmented?v("ftyp",[E("iso5"),n(t),E("iso5"),E("iso6"),E("mp41")]):v("ftyp",[E("isom"),n(t),E("isom"),e.holdsAvc?E("avc1"):[],E("mp41")])},Se=e=>({type:"mdat",largeSize:e}),ct=e=>({type:"free",size:e}),re=(e,t,s=!1)=>v("moov",null,[wt(t,e),...e.map(r=>vt(r,t)),s?Gt(e):null]),wt=(e,t)=>{let s=O(Math.max(0,...t.filter(l=>l.samples.length>0).map(l=>{const u=Ce(l.samples);return u.presentationTimestamp+u.duration})),Ae),r=Math.max(...t.map(l=>l.id))+1,a=!V(e)||!V(s),o=a?x:n;return w("mvhd",+a,0,[o(e),o(e),n(Ae),o(s),A(1),ge(1),Array(10).fill(0),je(Ve),Array(24).fill(0),n(r)])},vt=(e,t)=>v("trak",null,[gt(e,t),yt(e,t)]),gt=(e,t)=>{let s=Ce(e.samples),r=O(s?s.presentationTimestamp+s.duration:0,Ae),a=!V(t)||!V(r),o=a?x:n,l;return e.info.type==="video"?l=typeof e.info.rotation=="number"?Le(e.info.rotation):e.info.rotation:l=Ve,w("tkhd",+a,3,[o(t),o(t),n(e.id),n(0),o(r),Array(8).fill(0),c(0),c(0),ge(e.info.type==="audio"?1:0),c(0),je(l),A(e.info.type==="video"?e.info.width:0),A(e.info.type==="video"?e.info.height:0)])},yt=(e,t)=>v("mdia",null,[Ct(e,t),St(e.info.type==="video"?"vide":"soun"),Tt(e)]),Ct=(e,t)=>{let s=Ce(e.samples),r=O(s?s.presentationTimestamp+s.duration:0,e.timescale),a=!V(t)||!V(r),o=a?x:n;return w("mdhd",+a,0,[o(t),o(t),n(e.timescale),o(r),c(21956),c(0)])},St=e=>w("hdlr",0,0,[E("mhlr"),E(e),n(0),n(0),n(0),E("mp4-muxer-hdlr",!0)]),Tt=e=>v("minf",null,[e.info.type==="video"?bt():_t(),kt(),At(e)]),bt=()=>w("vmhd",0,1,[c(0),c(0),c(0),c(0)]),_t=()=>w("smhd",0,0,[c(0),c(0)]),kt=()=>v("dinf",null,[Et()]),Et=()=>w("dref",0,0,[n(1)],[zt()]),zt=()=>w("url ",0,1),At=e=>{const t=e.compositionTimeOffsetTable.length>1||e.compositionTimeOffsetTable.some(s=>s.sampleCompositionTimeOffset!==0);return v("stbl",null,[Ot(e),Vt(e),jt(e),$t(e),Ht(e),qt(e),t?Xt(e):null])},Ot=e=>w("stsd",0,0,[n(1)],[e.info.type==="video"?Mt(ri[e.info.codec],e):Rt(ni[e.info.codec],e)]),Mt=(e,t)=>v(e,[Array(6).fill(0),c(1),c(0),c(0),Array(12).fill(0),c(t.info.width),c(t.info.height),n(4718592),n(4718592),n(0),c(1),Array(32).fill(0),c(24),dt(65535)],[ai[t.info.codec](t),t.info.decoderConfig.colorSpace?Ut(t):null]),Bt={bt709:1,bt470bg:5,smpte170m:6},It={bt709:1,smpte170m:6,"iec61966-2-1":13},Dt={rgb:0,bt709:1,bt470bg:5,smpte170m:6},Ut=e=>v("colr",[E("nclx"),c(Bt[e.info.decoderConfig.colorSpace.primaries]),c(It[e.info.decoderConfig.colorSpace.transfer]),c(Dt[e.info.decoderConfig.colorSpace.matrix]),y((e.info.decoderConfig.colorSpace.fullRange?1:0)<<7)]),xt=e=>e.info.decoderConfig&&v("avcC",[...new Uint8Array(e.info.decoderConfig.description)]),Wt=e=>e.info.decoderConfig&&v("hvcC",[...new Uint8Array(e.info.decoderConfig.description)]),Ft=e=>{if(!e.info.decoderConfig)return null;let t=e.info.decoderConfig;if(!t.colorSpace)throw new Error("'colorSpace' is required in the decoder config for VP9.");let s=t.codec.split("."),r=Number(s[1]),a=Number(s[2]),u=(Number(s[3])<<4)+(0<<1)+Number(t.colorSpace.fullRange);return w("vpcC",1,0,[y(r),y(a),y(u),y(2),y(2),y(2),c(0)])},Nt=()=>{let s=(1<<7)+1;return v("av1C",[s,0,0,0])},Rt=(e,t)=>v(e,[Array(6).fill(0),c(1),c(0),c(0),n(0),c(t.info.numberOfChannels),c(16),c(0),c(0),A(t.info.sampleRate)],[oi[t.info.codec](t)]),Pt=e=>{let t=new Uint8Array(e.info.decoderConfig.description);return w("esds",0,0,[n(58753152),y(32+t.byteLength),c(1),y(0),n(75530368),y(18+t.byteLength),y(64),y(21),Pe(0),n(130071),n(130071),n(92307584),y(t.byteLength),...t,n(109084800),y(1),y(2)])},Lt=e=>{let t=3840,s=0;const r=e.info.decoderConfig?.description;if(r){if(r.byteLength<18)throw new TypeError("Invalid decoder description provided for Opus; must be at least 18 bytes long.");const a=ArrayBuffer.isView(r)?new DataView(r.buffer,r.byteOffset,r.byteLength):new DataView(r);t=a.getUint16(10,!0),s=a.getInt16(14,!0)}return v("dOps",[y(0),y(e.info.numberOfChannels),c(t),n(e.info.sampleRate),ge(s),y(0)])},Vt=e=>w("stts",0,0,[n(e.timeToSampleTable.length),e.timeToSampleTable.map(t=>[n(t.sampleCount),n(t.sampleDelta)])]),jt=e=>{if(e.samples.every(s=>s.type==="key"))return null;let t=[...e.samples.entries()].filter(([,s])=>s.type==="key");return w("stss",0,0,[n(t.length),t.map(([s])=>n(s+1))])},$t=e=>w("stsc",0,0,[n(e.compactlyCodedChunkTable.length),e.compactlyCodedChunkTable.map(t=>[n(t.firstChunk),n(t.samplesPerChunk),n(1)])]),Ht=e=>w("stsz",0,0,[n(0),n(e.samples.length),e.samples.map(t=>n(t.size))]),qt=e=>e.finalizedChunks.length>0&&se(e.finalizedChunks).offset>=2**32?w("co64",0,0,[n(e.finalizedChunks.length),e.finalizedChunks.map(t=>x(t.offset))]):w("stco",0,0,[n(e.finalizedChunks.length),e.finalizedChunks.map(t=>n(t.offset))]),Xt=e=>w("ctts",0,0,[n(e.compositionTimeOffsetTable.length),e.compositionTimeOffsetTable.map(t=>[n(t.sampleCount),n(t.sampleCompositionTimeOffset)])]),Gt=e=>v("mvex",null,e.map(Zt)),Zt=e=>w("trex",0,0,[n(e.id),n(1),n(0),n(0),n(0)]),$e=(e,t)=>v("moof",null,[Kt(e),...t.map(Qt)]),Kt=e=>w("mfhd",0,0,[n(e)]),He=e=>{let t=0,s=0,r=0,a=0,o=e.type==="delta";return s|=+o,o?t|=1:t|=2,t<<24|s<<16|r<<8|a},Qt=e=>v("traf",null,[Jt(e),Yt(e),ei(e)]),Jt=e=>{let t=0;t|=8,t|=16,t|=32,t|=131072;let s=e.currentChunk.samples[1]??e.currentChunk.samples[0],r={duration:s.timescaleUnitsToNextSample,size:s.size,flags:He(s)};return w("tfhd",0,t,[n(e.id),n(r.duration),n(r.size),n(r.flags)])},Yt=e=>w("tfdt",1,0,[x(O(e.currentChunk.startTimestamp,e.timescale))]),ei=e=>{let t=e.currentChunk.samples.map(D=>D.timescaleUnitsToNextSample),s=e.currentChunk.samples.map(D=>D.size),r=e.currentChunk.samples.map(He),a=e.currentChunk.samples.map(D=>O(D.presentationTimestamp-D.decodeTimestamp,e.timescale)),o=new Set(t),l=new Set(s),u=new Set(r),g=new Set(a),b=u.size===2&&r[0]!==r[1],U=o.size>1,ie=l.size>1,st=!b&&u.size>1,rt=g.size>1||[...g].some(D=>D!==0),L=0;return L|=1,L|=4*+b,L|=256*+U,L|=512*+ie,L|=1024*+st,L|=2048*+rt,w("trun",1,L,[n(e.currentChunk.samples.length),n(e.currentChunk.offset-e.currentChunk.moofOffset||0),b?n(r[0]):[],e.currentChunk.samples.map((D,ce)=>[U?n(t[ce]):[],ie?n(s[ce]):[],st?n(r[ce]):[],rt?mt(a[ce]):[]])])},ti=e=>v("mfra",null,[...e.map(ii),si()]),ii=(e,t)=>w("tfra",1,0,[n(e.id),n(63),n(e.finalizedChunks.length),e.finalizedChunks.map(r=>[x(O(r.startTimestamp,e.timescale)),x(r.moofOffset),n(t+1),n(1),n(1)])]),si=()=>w("mfro",0,0,[n(0)]),ri={avc:"avc1",hevc:"hvc1",vp9:"vp09",av1:"av01"},ai={avc:xt,hevc:Wt,vp9:Ft,av1:Nt},ni={aac:"mp4a",opus:"Opus"},oi={aac:Pt,opus:Lt},hi=Symbol("isTarget"),ae=class{},qe=class extends ae{constructor(){super(...arguments),this.buffer=null}},Te=class extends ae{constructor(e){if(super(),this.options=e,typeof e!="object")throw new TypeError("StreamTarget requires an options object to be passed to its constructor.");if(e.onData){if(typeof e.onData!="function")throw new TypeError("options.onData, when provided, must be a function.");if(e.onData.length<2)throw new TypeError("options.onData, when provided, must be a function that takes in at least two arguments (data and position). Ignoring the position argument, which specifies the byte offset at which the data is to be written, can lead to broken outputs.")}if(e.chunked!==void 0&&typeof e.chunked!="boolean")throw new TypeError("options.chunked, when provided, must be a boolean.");if(e.chunkSize!==void 0&&(!Number.isInteger(e.chunkSize)||e.chunkSize<1024))throw new TypeError("options.chunkSize, when provided, must be an integer and not smaller than 1024.")}},Xe=class extends ae{constructor(e,t){if(super(),this.stream=e,this.options=t,!(e instanceof FileSystemWritableFileStream))throw new TypeError("FileSystemWritableFileStreamTarget requires a FileSystemWritableFileStream instance.");if(t!==void 0&&typeof t!="object")throw new TypeError("FileSystemWritableFileStreamTarget's options, when provided, must be an object.");if(t&&t.chunkSize!==void 0&&(!Number.isInteger(t.chunkSize)||t.chunkSize<=0))throw new TypeError("options.chunkSize, when provided, must be a positive integer")}},W,j,Ge=class{constructor(){this.pos=0,d(this,W,new Uint8Array(8)),d(this,j,new DataView(i(this,W).buffer)),this.offsets=new WeakMap}seek(e){this.pos=e}writeU32(e){i(this,j).setUint32(0,e,!1),this.write(i(this,W).subarray(0,4))}writeU64(e){i(this,j).setUint32(0,Math.floor(e/2**32),!1),i(this,j).setUint32(4,e,!1),this.write(i(this,W).subarray(0,8))}writeAscii(e){for(let t=0;t<e.length;t++)i(this,j).setUint8(t%8,e.charCodeAt(t)),t%8===7&&this.write(i(this,W));e.length%8!==0&&this.write(i(this,W).subarray(0,e.length%8))}writeBox(e){if(this.offsets.set(e,this.pos),e.contents&&!e.children)this.writeBoxHeader(e,e.size??e.contents.byteLength+8),this.write(e.contents);else{let t=this.pos;if(this.writeBoxHeader(e,0),e.contents&&this.write(e.contents),e.children)for(let a of e.children)a&&this.writeBox(a);let s=this.pos,r=e.size??s-t;this.seek(t),this.writeBoxHeader(e,r),this.seek(s)}}writeBoxHeader(e,t){this.writeU32(e.largeSize?1:t),this.writeAscii(e.type),e.largeSize&&this.writeU64(t)}measureBoxHeader(e){return 8+(e.largeSize?8:0)}patchBox(e){let t=this.pos;this.seek(this.offsets.get(e)),this.writeBox(e),this.seek(t)}measureBox(e){if(e.contents&&!e.children)return this.measureBoxHeader(e)+e.contents.byteLength;{let t=this.measureBoxHeader(e);if(e.contents&&(t+=e.contents.byteLength),e.children)for(let s of e.children)s&&(t+=this.measureBox(s));return t}}};W=new WeakMap,j=new WeakMap;var ne,F,G,Z,oe,be,li=class extends Ge{constructor(e){super(),d(this,oe),d(this,ne,void 0),d(this,F,new ArrayBuffer(2**16)),d(this,G,new Uint8Array(i(this,F))),d(this,Z,0),C(this,ne,e)}write(e){m(this,oe,be).call(this,this.pos+e.byteLength),i(this,G).set(e,this.pos),this.pos+=e.byteLength,C(this,Z,Math.max(i(this,Z),this.pos))}finalize(){m(this,oe,be).call(this,this.pos),i(this,ne).buffer=i(this,F).slice(0,Math.max(i(this,Z),this.pos))}};ne=new WeakMap,F=new WeakMap,G=new WeakMap,Z=new WeakMap,oe=new WeakSet,be=function(e){let t=i(this,F).byteLength;for(;t<e;)t*=2;if(t===i(this,F).byteLength)return;let s=new ArrayBuffer(t),r=new Uint8Array(s);r.set(i(this,G),0),C(this,F,s),C(this,G,r)};var fi=2**24,ui=2,K,N,Q,B,_,he,_e,ke,Ze,Ee,Ke,J,le,ze=class extends Ge{constructor(e){super(),d(this,he),d(this,ke),d(this,Ee),d(this,J),d(this,K,void 0),d(this,N,[]),d(this,Q,void 0),d(this,B,void 0),d(this,_,[]),C(this,K,e),C(this,Q,e.options?.chunked??!1),C(this,B,e.options?.chunkSize??fi)}write(e){i(this,N).push({data:e.slice(),start:this.pos}),this.pos+=e.byteLength}flush(){if(i(this,N).length===0)return;let e=[],t=[...i(this,N)].sort((s,r)=>s.start-r.start);e.push({start:t[0].start,size:t[0].data.byteLength});for(let s=1;s<t.length;s++){let r=e[e.length-1],a=t[s];a.start<=r.start+r.size?r.size=Math.max(r.size,a.start+a.data.byteLength-r.start):e.push({start:a.start,size:a.data.byteLength})}for(let s of e){s.data=new Uint8Array(s.size);for(let r of i(this,N))s.start<=r.start&&r.start<s.start+s.size&&s.data.set(r.data,r.start-s.start);i(this,Q)?(m(this,he,_e).call(this,s.data,s.start),m(this,J,le).call(this)):i(this,K).options.onData?.(s.data,s.start)}i(this,N).length=0}finalize(){i(this,Q)&&m(this,J,le).call(this,!0)}};K=new WeakMap,N=new WeakMap,Q=new WeakMap,B=new WeakMap,_=new WeakMap,he=new WeakSet,_e=function(e,t){let s=i(this,_).findIndex(u=>u.start<=t&&t<u.start+i(this,B));s===-1&&(s=m(this,Ee,Ke).call(this,t));let r=i(this,_)[s],a=t-r.start,o=e.subarray(0,Math.min(i(this,B)-a,e.byteLength));r.data.set(o,a);let l={start:a,end:a+o.byteLength};if(m(this,ke,Ze).call(this,r,l),r.written[0].start===0&&r.written[0].end===i(this,B)&&(r.shouldFlush=!0),i(this,_).length>ui){for(let u=0;u<i(this,_).length-1;u++)i(this,_)[u].shouldFlush=!0;m(this,J,le).call(this)}o.byteLength<e.byteLength&&m(this,he,_e).call(this,e.subarray(o.byteLength),t+o.byteLength)},ke=new WeakSet,Ze=function(e,t){let s=0,r=e.written.length-1,a=-1;for(;s<=r;){let o=Math.floor(s+(r-s+1)/2);e.written[o].start<=t.start?(s=o+1,a=o):r=o-1}for(e.written.splice(a+1,0,t),(a===-1||e.written[a].end<t.start)&&a++;a<e.written.length-1&&e.written[a].end>=e.written[a+1].start;)e.written[a].end=Math.max(e.written[a].end,e.written[a+1].end),e.written.splice(a+1,1)},Ee=new WeakSet,Ke=function(e){let s={start:Math.floor(e/i(this,B))*i(this,B),data:new Uint8Array(i(this,B)),written:[],shouldFlush:!1};return i(this,_).push(s),i(this,_).sort((r,a)=>r.start-a.start),i(this,_).indexOf(s)},J=new WeakSet,le=function(e=!1){for(let t=0;t<i(this,_).length;t++){let s=i(this,_)[t];if(!(!s.shouldFlush&&!e)){for(let r of s.written)i(this,K).options.onData?.(s.data.subarray(r.start,r.end),s.start+r.start);i(this,_).splice(t--,1)}}};var di=class extends ze{constructor(e){super(new Te({onData:(t,s)=>e.stream.write({type:"write",data:t,position:s}),chunked:!0,chunkSize:e.options?.chunkSize}))}},Ae=1e3,mi=["avc","hevc","vp9","av1"],pi=["aac","opus"],ci=2082844800,wi=["strict","offset","cross-track-offset"],h,f,fe,k,T,S,$,H,Oe,R,P,Y,Me,Qe,Be,Je,Ie,Ye,De,et,Ue,tt,ue,xe,M,I,We,it,ee,de,me,Fe,q,te,pe,Ne,vi=class{constructor(e){if(d(this,Me),d(this,Be),d(this,Ie),d(this,De),d(this,Ue),d(this,ue),d(this,M),d(this,We),d(this,ee),d(this,me),d(this,q),d(this,pe),d(this,h,void 0),d(this,f,void 0),d(this,fe,void 0),d(this,k,void 0),d(this,T,null),d(this,S,null),d(this,$,Math.floor(Date.now()/1e3)+ci),d(this,H,[]),d(this,Oe,1),d(this,R,[]),d(this,P,[]),d(this,Y,!1),m(this,Me,Qe).call(this,e),e.video=X(e.video),e.audio=X(e.audio),e.fastStart=X(e.fastStart),this.target=e.target,C(this,h,{firstTimestampBehavior:"strict",...e}),e.target instanceof qe)C(this,f,new li(e.target));else if(e.target instanceof Te)C(this,f,new ze(e.target));else if(e.target instanceof Xe)C(this,f,new di(e.target));else throw new Error(`Invalid target: ${e.target}`);m(this,De,et).call(this),m(this,Be,Je).call(this)}addVideoChunk(e,t,s,r){if(!(e instanceof EncodedVideoChunk))throw new TypeError("addVideoChunk's first argument (sample) must be of type EncodedVideoChunk.");if(t&&typeof t!="object")throw new TypeError("addVideoChunk's second argument (meta), when provided, must be an object.");if(s!==void 0&&(!Number.isFinite(s)||s<0))throw new TypeError("addVideoChunk's third argument (timestamp), when provided, must be a non-negative real number.");if(r!==void 0&&!Number.isFinite(r))throw new TypeError("addVideoChunk's fourth argument (compositionTimeOffset), when provided, must be a real number.");let a=new Uint8Array(e.byteLength);e.copyTo(a),this.addVideoChunkRaw(a,e.type,s??e.timestamp,e.duration,t,r)}addVideoChunkRaw(e,t,s,r,a,o){if(!(e instanceof Uint8Array))throw new TypeError("addVideoChunkRaw's first argument (data) must be an instance of Uint8Array.");if(t!=="key"&&t!=="delta")throw new TypeError("addVideoChunkRaw's second argument (type) must be either 'key' or 'delta'.");if(!Number.isFinite(s)||s<0)throw new TypeError("addVideoChunkRaw's third argument (timestamp) must be a non-negative real number.");if(!Number.isFinite(r)||r<0)throw new TypeError("addVideoChunkRaw's fourth argument (duration) must be a non-negative real number.");if(a&&typeof a!="object")throw new TypeError("addVideoChunkRaw's fifth argument (meta), when provided, must be an object.");if(o!==void 0&&!Number.isFinite(o))throw new TypeError("addVideoChunkRaw's sixth argument (compositionTimeOffset), when provided, must be a real number.");if(m(this,pe,Ne).call(this),!i(this,h).video)throw new Error("No video track declared.");if(typeof i(this,h).fastStart=="object"&&i(this,T).samples.length===i(this,h).fastStart.expectedVideoChunks)throw new Error(`Cannot add more video chunks than specified in 'fastStart' (${i(this,h).fastStart.expectedVideoChunks}).`);let l=m(this,ue,xe).call(this,i(this,T),e,t,s,r,a,o);if(i(this,h).fastStart==="fragmented"&&i(this,S)){for(;i(this,P).length>0&&i(this,P)[0].decodeTimestamp<=l.decodeTimestamp;){let u=i(this,P).shift();m(this,M,I).call(this,i(this,S),u)}l.decodeTimestamp<=i(this,S).lastDecodeTimestamp?m(this,M,I).call(this,i(this,T),l):i(this,R).push(l)}else m(this,M,I).call(this,i(this,T),l)}addAudioChunk(e,t,s){if(!(e instanceof EncodedAudioChunk))throw new TypeError("addAudioChunk's first argument (sample) must be of type EncodedAudioChunk.");if(t&&typeof t!="object")throw new TypeError("addAudioChunk's second argument (meta), when provided, must be an object.");if(s!==void 0&&(!Number.isFinite(s)||s<0))throw new TypeError("addAudioChunk's third argument (timestamp), when provided, must be a non-negative real number.");let r=new Uint8Array(e.byteLength);e.copyTo(r),this.addAudioChunkRaw(r,e.type,s??e.timestamp,e.duration,t)}addAudioChunkRaw(e,t,s,r,a){if(!(e instanceof Uint8Array))throw new TypeError("addAudioChunkRaw's first argument (data) must be an instance of Uint8Array.");if(t!=="key"&&t!=="delta")throw new TypeError("addAudioChunkRaw's second argument (type) must be either 'key' or 'delta'.");if(!Number.isFinite(s)||s<0)throw new TypeError("addAudioChunkRaw's third argument (timestamp) must be a non-negative real number.");if(!Number.isFinite(r)||r<0)throw new TypeError("addAudioChunkRaw's fourth argument (duration) must be a non-negative real number.");if(a&&typeof a!="object")throw new TypeError("addAudioChunkRaw's fifth argument (meta), when provided, must be an object.");if(m(this,pe,Ne).call(this),!i(this,h).audio)throw new Error("No audio track declared.");if(typeof i(this,h).fastStart=="object"&&i(this,S).samples.length===i(this,h).fastStart.expectedAudioChunks)throw new Error(`Cannot add more audio chunks than specified in 'fastStart' (${i(this,h).fastStart.expectedAudioChunks}).`);let o=m(this,ue,xe).call(this,i(this,S),e,t,s,r,a);if(i(this,h).fastStart==="fragmented"&&i(this,T)){for(;i(this,R).length>0&&i(this,R)[0].decodeTimestamp<=o.decodeTimestamp;){let l=i(this,R).shift();m(this,M,I).call(this,i(this,T),l)}o.decodeTimestamp<=i(this,T).lastDecodeTimestamp?m(this,M,I).call(this,i(this,S),o):i(this,P).push(o)}else m(this,M,I).call(this,i(this,S),o)}finalize(){if(i(this,Y))throw new Error("Cannot finalize a muxer more than once.");if(i(this,h).fastStart==="fragmented"){for(let t of i(this,R))m(this,M,I).call(this,i(this,T),t);for(let t of i(this,P))m(this,M,I).call(this,i(this,S),t);m(this,me,Fe).call(this,!1)}else i(this,T)&&m(this,ee,de).call(this,i(this,T)),i(this,S)&&m(this,ee,de).call(this,i(this,S));let e=[i(this,T),i(this,S)].filter(Boolean);if(i(this,h).fastStart==="in-memory"){let t;for(let r=0;r<2;r++){let a=re(e,i(this,$)),o=i(this,f).measureBox(a);t=i(this,f).measureBox(i(this,k));let l=i(this,f).pos+o+t;for(let u of i(this,H)){u.offset=l;for(let{data:g}of u.samples)l+=g.byteLength,t+=g.byteLength}if(l<2**32)break;t>=2**32&&(i(this,k).largeSize=!0)}let s=re(e,i(this,$));i(this,f).writeBox(s),i(this,k).size=t,i(this,f).writeBox(i(this,k));for(let r of i(this,H))for(let a of r.samples)i(this,f).write(a.data),a.data=null}else if(i(this,h).fastStart==="fragmented"){let t=i(this,f).pos,s=ti(e);i(this,f).writeBox(s);let r=i(this,f).pos-t;i(this,f).seek(i(this,f).pos-4),i(this,f).writeU32(r)}else{let t=i(this,f).offsets.get(i(this,k)),s=i(this,f).pos-t;i(this,k).size=s,i(this,k).largeSize=s>=2**32,i(this,f).patchBox(i(this,k));let r=re(e,i(this,$));if(typeof i(this,h).fastStart=="object"){i(this,f).seek(i(this,fe)),i(this,f).writeBox(r);let a=t-i(this,f).pos;i(this,f).writeBox(ct(a))}else i(this,f).writeBox(r)}m(this,q,te).call(this),i(this,f).finalize(),C(this,Y,!0)}};return h=new WeakMap,f=new WeakMap,fe=new WeakMap,k=new WeakMap,T=new WeakMap,S=new WeakMap,$=new WeakMap,H=new WeakMap,Oe=new WeakMap,R=new WeakMap,P=new WeakMap,Y=new WeakMap,Me=new WeakSet,Qe=function(e){if(typeof e!="object")throw new TypeError("The muxer requires an options object to be passed to its constructor.");if(!(e.target instanceof ae))throw new TypeError("The target must be provided and an instance of Target.");if(e.video){if(!mi.includes(e.video.codec))throw new TypeError(`Unsupported video codec: ${e.video.codec}`);if(!Number.isInteger(e.video.width)||e.video.width<=0)throw new TypeError(`Invalid video width: ${e.video.width}. Must be a positive integer.`);if(!Number.isInteger(e.video.height)||e.video.height<=0)throw new TypeError(`Invalid video height: ${e.video.height}. Must be a positive integer.`);const t=e.video.rotation;if(typeof t=="number"&&![0,90,180,270].includes(t))throw new TypeError(`Invalid video rotation: ${t}. Has to be 0, 90, 180 or 270.`);if(Array.isArray(t)&&(t.length!==9||t.some(s=>typeof s!="number")))throw new TypeError(`Invalid video transformation matrix: ${t.join()}`);if(e.video.frameRate!==void 0&&(!Number.isInteger(e.video.frameRate)||e.video.frameRate<=0))throw new TypeError(`Invalid video frame rate: ${e.video.frameRate}. Must be a positive integer.`)}if(e.audio){if(!pi.includes(e.audio.codec))throw new TypeError(`Unsupported audio codec: ${e.audio.codec}`);if(!Number.isInteger(e.audio.numberOfChannels)||e.audio.numberOfChannels<=0)throw new TypeError(`Invalid number of audio channels: ${e.audio.numberOfChannels}. Must be a positive integer.`);if(!Number.isInteger(e.audio.sampleRate)||e.audio.sampleRate<=0)throw new TypeError(`Invalid audio sample rate: ${e.audio.sampleRate}. Must be a positive integer.`)}if(e.firstTimestampBehavior&&!wi.includes(e.firstTimestampBehavior))throw new TypeError(`Invalid first timestamp behavior: ${e.firstTimestampBehavior}`);if(typeof e.fastStart=="object"){if(e.video){if(e.fastStart.expectedVideoChunks===void 0)throw new TypeError("'fastStart' is an object but is missing property 'expectedVideoChunks'.");if(!Number.isInteger(e.fastStart.expectedVideoChunks)||e.fastStart.expectedVideoChunks<0)throw new TypeError("'expectedVideoChunks' must be a non-negative integer.")}if(e.audio){if(e.fastStart.expectedAudioChunks===void 0)throw new TypeError("'fastStart' is an object but is missing property 'expectedAudioChunks'.");if(!Number.isInteger(e.fastStart.expectedAudioChunks)||e.fastStart.expectedAudioChunks<0)throw new TypeError("'expectedAudioChunks' must be a non-negative integer.")}}else if(![!1,"in-memory","fragmented"].includes(e.fastStart))throw new TypeError("'fastStart' option must be false, 'in-memory', 'fragmented' or an object.");if(e.minFragmentDuration!==void 0&&(!Number.isFinite(e.minFragmentDuration)||e.minFragmentDuration<0))throw new TypeError("'minFragmentDuration' must be a non-negative number.")},Be=new WeakSet,Je=function(){if(i(this,f).writeBox(pt({holdsAvc:i(this,h).video?.codec==="avc",fragmented:i(this,h).fastStart==="fragmented"})),C(this,fe,i(this,f).pos),i(this,h).fastStart==="in-memory")C(this,k,Se(!1));else if(i(this,h).fastStart!=="fragmented"){if(typeof i(this,h).fastStart=="object"){let e=m(this,Ie,Ye).call(this);i(this,f).seek(i(this,f).pos+e)}C(this,k,Se(!0)),i(this,f).writeBox(i(this,k))}m(this,q,te).call(this)},Ie=new WeakSet,Ye=function(){if(typeof i(this,h).fastStart!="object")return;let e=0,t=[i(this,h).fastStart.expectedVideoChunks,i(this,h).fastStart.expectedAudioChunks];for(let s of t)s&&(e+=8*Math.ceil(.6666666666666666*s),e+=4*s,e+=12*Math.ceil(.6666666666666666*s),e+=4*s,e+=8*s);return e+=4096,e},De=new WeakSet,et=function(){if(i(this,h).video&&C(this,T,{id:1,info:{type:"video",codec:i(this,h).video.codec,width:i(this,h).video.width,height:i(this,h).video.height,rotation:i(this,h).video.rotation??0,decoderConfig:null},timescale:i(this,h).video.frameRate??57600,samples:[],finalizedChunks:[],currentChunk:null,firstDecodeTimestamp:void 0,lastDecodeTimestamp:-1,timeToSampleTable:[],compositionTimeOffsetTable:[],lastTimescaleUnits:null,lastSample:null,compactlyCodedChunkTable:[]}),i(this,h).audio&&(C(this,S,{id:i(this,h).video?2:1,info:{type:"audio",codec:i(this,h).audio.codec,numberOfChannels:i(this,h).audio.numberOfChannels,sampleRate:i(this,h).audio.sampleRate,decoderConfig:null},timescale:i(this,h).audio.sampleRate,samples:[],finalizedChunks:[],currentChunk:null,firstDecodeTimestamp:void 0,lastDecodeTimestamp:-1,timeToSampleTable:[],compositionTimeOffsetTable:[],lastTimescaleUnits:null,lastSample:null,compactlyCodedChunkTable:[]}),i(this,h).audio.codec==="aac")){let e=m(this,Ue,tt).call(this,2,i(this,h).audio.sampleRate,i(this,h).audio.numberOfChannels);i(this,S).info.decoderConfig={codec:i(this,h).audio.codec,description:e,numberOfChannels:i(this,h).audio.numberOfChannels,sampleRate:i(this,h).audio.sampleRate}}},Ue=new WeakSet,tt=function(e,t,s){let a=[96e3,88200,64e3,48e3,44100,32e3,24e3,22050,16e3,12e3,11025,8e3,7350].indexOf(t),o=s,l="";l+=e.toString(2).padStart(5,"0"),l+=a.toString(2).padStart(4,"0"),a===15&&(l+=t.toString(2).padStart(24,"0")),l+=o.toString(2).padStart(4,"0");let u=Math.ceil(l.length/8)*8;l=l.padEnd(u,"0");let g=new Uint8Array(l.length/8);for(let b=0;b<l.length;b+=8)g[b/8]=parseInt(l.slice(b,b+8),2);return g},ue=new WeakSet,xe=function(e,t,s,r,a,o,l){let u=r/1e6,g=(r-(l??0))/1e6,b=a/1e6,U=m(this,We,it).call(this,u,g,e);return u=U.presentationTimestamp,g=U.decodeTimestamp,o?.decoderConfig&&(e.info.decoderConfig===null?e.info.decoderConfig=o.decoderConfig:Object.assign(e.info.decoderConfig,o.decoderConfig)),{presentationTimestamp:u,decodeTimestamp:g,duration:b,data:t,size:t.byteLength,type:s,timescaleUnitsToNextSample:O(b,e.timescale)}},M=new WeakSet,I=function(e,t){i(this,h).fastStart!=="fragmented"&&e.samples.push(t);const s=O(t.presentationTimestamp-t.decodeTimestamp,e.timescale);if(e.lastTimescaleUnits!==null){let a=O(t.decodeTimestamp,e.timescale,!1),o=Math.round(a-e.lastTimescaleUnits);if(e.lastTimescaleUnits+=o,e.lastSample.timescaleUnitsToNextSample=o,i(this,h).fastStart!=="fragmented"){let l=se(e.timeToSampleTable);l.sampleCount===1?(l.sampleDelta=o,l.sampleCount++):l.sampleDelta===o?l.sampleCount++:(l.sampleCount--,e.timeToSampleTable.push({sampleCount:2,sampleDelta:o}));const u=se(e.compositionTimeOffsetTable);u.sampleCompositionTimeOffset===s?u.sampleCount++:e.compositionTimeOffsetTable.push({sampleCount:1,sampleCompositionTimeOffset:s})}}else e.lastTimescaleUnits=0,i(this,h).fastStart!=="fragmented"&&(e.timeToSampleTable.push({sampleCount:1,sampleDelta:O(t.duration,e.timescale)}),e.compositionTimeOffsetTable.push({sampleCount:1,sampleCompositionTimeOffset:s}));e.lastSample=t;let r=!1;if(!e.currentChunk)r=!0;else{let a=t.presentationTimestamp-e.currentChunk.startTimestamp;if(i(this,h).fastStart==="fragmented"){let o=i(this,T)??i(this,S);const l=i(this,h).minFragmentDuration??1;e===o&&t.type==="key"&&a>=l&&(r=!0,m(this,me,Fe).call(this))}else r=a>=.5}r&&(e.currentChunk&&m(this,ee,de).call(this,e),e.currentChunk={startTimestamp:t.presentationTimestamp,samples:[]}),e.currentChunk.samples.push(t)},We=new WeakSet,it=function(e,t,s){const r=i(this,h).firstTimestampBehavior==="strict",a=s.lastDecodeTimestamp===-1;if(r&&a&&t!==0)throw new Error(`The first chunk for your media track must have a timestamp of 0 (received DTS=${t}).Non-zero first timestamps are often caused by directly piping frames or audio data from a MediaStreamTrack into the encoder. Their timestamps are typically relative to the age of thedocument, which is probably what you want.
+
+If you want to offset all timestamps of a track such that the first one is zero, set firstTimestampBehavior: 'offset' in the options.
+`);if(i(this,h).firstTimestampBehavior==="offset"||i(this,h).firstTimestampBehavior==="cross-track-offset"){s.firstDecodeTimestamp===void 0&&(s.firstDecodeTimestamp=t);let l;i(this,h).firstTimestampBehavior==="offset"?l=s.firstDecodeTimestamp:l=Math.min(i(this,T)?.firstDecodeTimestamp??1/0,i(this,S)?.firstDecodeTimestamp??1/0),t-=l,e-=l}if(t<s.lastDecodeTimestamp)throw new Error(`Timestamps must be monotonically increasing (DTS went from ${s.lastDecodeTimestamp*1e6} to ${t*1e6}).`);return s.lastDecodeTimestamp=t,{presentationTimestamp:e,decodeTimestamp:t}},ee=new WeakSet,de=function(e){if(i(this,h).fastStart==="fragmented")throw new Error("Can't finalize individual chunks if 'fastStart' is set to 'fragmented'.");if(e.currentChunk){if(e.finalizedChunks.push(e.currentChunk),i(this,H).push(e.currentChunk),(e.compactlyCodedChunkTable.length===0||se(e.compactlyCodedChunkTable).samplesPerChunk!==e.currentChunk.samples.length)&&e.compactlyCodedChunkTable.push({firstChunk:e.finalizedChunks.length,samplesPerChunk:e.currentChunk.samples.length}),i(this,h).fastStart==="in-memory"){e.currentChunk.offset=0;return}e.currentChunk.offset=i(this,f).pos;for(let t of e.currentChunk.samples)i(this,f).write(t.data),t.data=null;m(this,q,te).call(this)}},me=new WeakSet,Fe=function(e=!0){if(i(this,h).fastStart!=="fragmented")throw new Error("Can't finalize a fragment unless 'fastStart' is set to 'fragmented'.");let t=[i(this,T),i(this,S)].filter(u=>u&&u.currentChunk);if(t.length===0)return;let s=ut(this,Oe)._++;if(s===1){let u=re(t,i(this,$),!0);i(this,f).writeBox(u)}let r=i(this,f).pos,a=$e(s,t);i(this,f).writeBox(a);{let u=Se(!1),g=0;for(let U of t)for(let ie of U.currentChunk.samples)g+=ie.size;let b=i(this,f).measureBox(u)+g;b>=4294967296&&(u.largeSize=!0,b=i(this,f).measureBox(u)+g),u.size=b,i(this,f).writeBox(u)}for(let u of t){u.currentChunk.offset=i(this,f).pos,u.currentChunk.moofOffset=r;for(let g of u.currentChunk.samples)i(this,f).write(g.data),g.data=null}let o=i(this,f).pos;i(this,f).seek(i(this,f).offsets.get(a));let l=$e(s,t);i(this,f).writeBox(l),i(this,f).seek(o);for(let u of t)u.finalizedChunks.push(u.currentChunk),i(this,H).push(u.currentChunk),u.currentChunk=null;e&&m(this,q,te).call(this)},q=new WeakSet,te=function(){i(this,f)instanceof ze&&i(this,f).flush()},pe=new WeakSet,Ne=function(){if(i(this,Y))throw new Error("Cannot add new video or audio chunks after the file has been finalized.")},ft(Re)})();typeof module=="object"&&typeof module.exports=="object"&&Object.assign(module.exports,Mp4Muxer);
+</script>
 <script>
 "use strict";
 const FONT='Pretendard,"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif';
@@ -1391,11 +1443,18 @@ if(APP){const b=$('bShare');b.hidden=false;b.textContent='사진첩에 모두 �
   for(let i=0;i<S.slides.length;i++){if(window.AndroidBridge.save(`post_${st}_${String(i+1).padStart(2,'0')}.png`,await b64(await blobOf(i)))==='ok')n++}
   b.textContent='사진첩에 모두 저장';toast(n?`사진첩 AABoardCard 폴더에 ${n}장 저장`:'저장하지 못했어요')}}
 async function save(blob,name){
+  if(APP&&(blob.size>3e6||/\.(mp4|webm)$/.test(name))){const B=window.AndroidBridge;
+    if(!B.saveBegin){toast('영상 저장은 앱 업데이트 후 가능해요. 세트 탭에서 업데이트를 확인해 주세요.');return false}
+    const id=B.saveBegin(name);if(id<0){toast('저장하지 못했어요');return false}
+    const u=new Uint8Array(await blob.arrayBuffer()),CH=384*1024;
+    for(let o=0;o<u.length;o+=CH){let st='';const part=u.subarray(o,Math.min(u.length,o+CH));for(let i=0;i<part.length;i+=0x8000)st+=String.fromCharCode.apply(null,part.subarray(i,i+0x8000));
+      if(B.saveChunk(id,btoa(st))!=='ok'){toast('저장하지 못했어요');return false}}
+    const r=B.saveEnd(id);toast(r==='ok'?(/\.(mp4|webm)$/.test(name)?'갤러리 AABoardCard 폴더(동영상)에 저장':'저장 완료'):'저장하지 못했어요');return r==='ok'}
   if(APP){const r=window.AndroidBridge.save(name,await b64(blob));toast(r==='ok'?(/\.png$/.test(name)?'사진첩 AABoardCard 폴더에 저장':'다운로드/AABoardCard 폴더에 저장'):'저장하지 못했어요');return r==='ok'}
   if(DL){try{await DL.save({filename:name,data:blob});return true}catch(e){if(!e||e.code!=='declined')toast('저장하지 못했어요'+(e&&e.code?' ('+e.code+')':''));return false}}
   if(HOSTED){toast('이 화면에서는 저장이 막혀 있어요. 파일 버전을 사용해 주세요.');return false}
   dl(blob,name);return true}
-async function fontsReady(){if(!document.fonts||!document.fonts.load)return;const txt=S.slides.map(s=>[s.tag,s.title,s.sub,s.body,s.items,s.meta].join('')).join('')+S.handle+'사진 넣기내 핸드보드';
+async function fontsReady(){if(!document.fonts||!document.fonts.load)return;const txt=S.slides.map(s=>[s.tag,s.title,s.sub,s.body,s.items,s.meta].join('')).join('')+S.handle+'사진 넣기내 핸드보드장면을 추가하세요사진을 넣어 주세요영상을 선택해 주세요'+R.scenes.map(s=>s.text+s.sub).join('');
   try{await Promise.all(['400','500','600','700','800'].flatMap(w=>[document.fonts.load(w+' 40px Pretendard',txt),document.fonts.load(w+' 40px "Noto Sans KR"',txt)]).concat([document.fonts.load('400 40px Jua',txt)]))}catch(e){}}
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
 function stamp(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`}
@@ -1433,7 +1492,7 @@ function persist(){try{localStorage.setItem('ipm',JSON.stringify(S))}catch(e){tr
 function sync(){$('size').value=S.size;$('theme').value=S.theme;$('guide').checked=S.guide;$('handle').value=S.handle;$('avatar').checked=S.avatar!==false;$('accent').value=S.accent||THEMES[S.theme].ac;
   $('cHook').value=S.cap.hook;$('cBody').value=S.cap.body;$('cCta').value=S.cap.cta;$('cTags').value=S.cap.tags;capUp()}
 $('size').onchange=e=>{S.size=e.target.value;all()};
-$('theme').onchange=e=>{S.theme=e.target.value;if(!S.accent)$('accent').value=THEMES[S.theme].ac;all()};
+$('theme').onchange=e=>{S.theme=e.target.value;if(!S.accent)$('accent').value=THEMES[S.theme].ac;all();if(document.body.classList.contains('reel'))rAll()};
 $('guide').onchange=e=>{S.guide=e.target.checked;draw();persist()};
 $('avatar').onchange=e=>{S.avatar=e.target.checked;all()};AVI.onload=()=>{draw();thumbs()};
 $('handle').oninput=e=>{S.handle=e.target.value;soft()};
@@ -1465,11 +1524,226 @@ function capIn(){S.cap={hook:$('cHook').value,body:$('cBody').value,cta:$('cCta'
 $('bCopy').onclick=async()=>{const t=capText();try{await navigator.clipboard.writeText(t)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
   $('bCopy').textContent='복사됨 ✓';setTimeout(()=>$('bCopy').textContent='캡션 복사',1500)};
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+b.dataset.t))});
-window.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){S.cur=Math.min(S.slides.length-1,S.cur+1);all()}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){S.cur=Math.max(0,S.cur-1);all()}});
+window.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||document.body.classList.contains('reel'))return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){S.cur=Math.min(S.slides.length-1,S.cur+1);all()}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){S.cur=Math.max(0,S.cur-1);all()}});
 
 function hh(){document.documentElement.style.setProperty('--hh',(matchMedia('(max-width:900px)').matches?document.querySelector('header').offsetHeight:0)+'px')}
 addEventListener('resize',hh);hh();
 $('logo').src=AV;
+/* ================= 릴스 메이커 ================= */
+const RIMG=new Map(),RVID=new Map();
+let R={scenes:[],cur:0,res:1080,trans:'fade',bar:true,brand:true};
+const rcv=$('rcv'),rcx=rcv.getContext('2d');rcv.width=1080;rcv.height=1920;
+let rT=0,rPlaying=false,rLast=0,rBusy=false,rCancel=false;
+function mkScene(kind,o){return Object.assign({id:uid(),kind,dur:3,text:'',sub:'',big:false,pos:'bottom',motion:'zoomin',fit:'cover',tin:0,tout:5,img:null,raw:false},o||{})}
+const sdur=sc=>sc.kind==='video'?Math.max(0.3,(+sc.tout||0)-(+sc.tin||0)):Math.max(0.5,+sc.dur||3);
+const rTotal=()=>R.scenes.reduce((a,s)=>a+sdur(s),0);
+function sceneAt(t){let acc=0;for(let i=0;i<R.scenes.length;i++){const d=sdur(R.scenes[i]);if(t<acc+d||i===R.scenes.length-1)return{sc:R.scenes[i],i,local:Math.min(d,Math.max(0,t-acc)),d,start:acc};acc+=d}return null}
+function sceneStart(i){let a=0;for(let k=0;k<i;k++)a+=sdur(R.scenes[k]);return a}
+function drawMedia(c,el,iw,ih,W,H,fitMode,scale,ox){
+  if(fitMode==='contain'){const s0=Math.max(W/iw,H/ih)*1.12;c.save();c.filter='blur(36px) brightness(0.72)';c.drawImage(el,(W-iw*s0)/2,(H-ih*s0)/2,iw*s0,ih*s0);c.restore();
+    const s=Math.min(W/iw,H/ih)*scale;c.drawImage(el,(W-iw*s)/2+ox,(H-ih*s)/2,iw*s,ih*s)}
+  else{const s=Math.max(W/iw,H/ih)*scale;c.drawImage(el,(W-iw*s)/2+ox,(H-ih*s)/2,iw*s,ih*s)}
+}
+// 항상 1080x1920 좌표로 그린다(해상도는 호출 쪽에서 scale)
+function drawReel(c,t){
+  const W=1080,H=1920,th=T();TF=th.tf||'';
+  const g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,th.bg2);g.addColorStop(1,th.bg);c.fillStyle=g;c.fillRect(0,0,W,H);
+  const cur=sceneAt(t);
+  if(!cur){text(c,'장면을 추가하세요',0,H/2-30,W,54,{color:th.mut,align:'center',w:700});return}
+  const {sc,i,local,d}=cur,p=d?local/d:0;let onMedia=false;
+  const ph=msg=>{c.fillStyle=th.tile;c.fillRect(0,0,W,H);text(c,msg,0,H/2-30,W,50,{color:th.mut,align:'center',w:700})};
+  if(sc.kind==='photo'){const im=RIMG.get(sc.id);
+    if(im&&im.naturalWidth){let s=1,ox=0;const m=sc.raw?'none':sc.motion;
+      if(m==='zoomin')s=1+0.1*p;else if(m==='zoomout')s=1.1-0.1*p;else if(m==='panl'){s=1.1;ox=(0.5-p)*W*0.09}else if(m==='panr'){s=1.1;ox=(p-0.5)*W*0.09}
+      drawMedia(c,im,im.naturalWidth,im.naturalHeight,W,H,sc.raw?'cover':sc.fit,s,ox);onMedia=true}
+    else ph('사진을 넣어 주세요')}
+  else if(sc.kind==='video'){const v=RVID.get(sc.id);
+    if(v&&v.el.videoWidth){drawMedia(c,v.el,v.el.videoWidth,v.el.videoHeight,W,H,sc.fit,1,0);onMedia=true}
+    else ph('영상을 선택해 주세요')}
+  else{c.save();c.globalAlpha=.16;c.fillStyle=th.ac;c.beginPath();c.arc(W*0.88,H*0.2,W*0.5,0,7);c.fill();c.beginPath();c.arc(W*0.08,H*0.86,W*0.36,0,7);c.fill();c.restore()}
+  const a=i===0?1:Math.min(1,local/0.35),ease=1-Math.pow(1-a,3),mw=W-200; // 첫 장면은 첫 프레임부터 글자가 보이게(커버용)
+  const posY=h=>sc.pos==='top'?340:sc.pos==='center'?(H-h)/2:H-480-h;
+  if(sc.kind==='card'){
+    c.save();c.globalAlpha=ease;c.translate(0,(1-ease)*40);
+    const ts=fit(c,sc.text,mw,H*0.32,112,56,{w:800,lh:1.2}),h=measure(c,sc.text,mw,ts,{w:800,lh:1.2});
+    let y=H*0.44-h/2;y=text(c,sc.text,100,y,mw,ts,{w:800,lh:1.2,color:th.tx,align:'center'});
+    if(sc.sub){y+=56;font(c,40,700);const w=Math.min(mw,c.measureText(sc.sub).width+96);c.fillStyle=th.ac;rr(c,(W-w)/2,y,w,92,46);c.fill();
+      text(c,sc.sub,(W-w)/2+20,y+(92-40*1.3)/2,w-40,40,{w:700,color:th.onAc,align:'center',max:1})}
+    c.restore();
+  }else if(sc.text&&!sc.raw){
+    if(sc.big&&onMedia){let gg;
+      if(sc.pos==='top'){gg=c.createLinearGradient(0,0,0,H*0.55);gg.addColorStop(0,'rgba(0,0,0,.62)');gg.addColorStop(1,'rgba(0,0,0,0)')}
+      else if(sc.pos==='center'){gg='rgba(0,0,0,.32)'}
+      else{gg=c.createLinearGradient(0,H*0.4,0,H);gg.addColorStop(0,'rgba(0,0,0,0)');gg.addColorStop(1,'rgba(0,0,0,.68)')}
+      c.fillStyle=gg;c.fillRect(0,0,W,H)}
+    c.save();c.globalAlpha=ease;c.translate(0,(1-ease)*40);
+    if(sc.big){const ts=fit(c,sc.text,mw,H*0.3,124,60,{w:800,lh:1.18}),h=measure(c,sc.text,mw,ts,{w:800,lh:1.18});
+      if(onMedia){c.shadowColor='#000b';c.shadowBlur=26}
+      text(c,sc.text,100,posY(h),mw,ts,{w:800,lh:1.18,color:onMedia?'#fff':th.tx,align:'center'})}
+    else{font(c,58,700);const lines=wrap(c,sc.text,mw-70),lh=96,h=lines.length*lh;let y=posY(h);
+      lines.forEach(l=>{font(c,58,700);const w=c.measureText(l).width+70;c.fillStyle=th.ac;rr(c,(W-w)/2,y,w,lh-10,22);c.fill();
+        c.fillStyle=th.onAc;c.textAlign='center';c.textBaseline='middle';c.fillText(l,W/2,y+(lh-10)/2+2);y+=lh})}
+    c.restore();
+  }
+  if(R.brand&&!sc.raw){const r=34,cx0=100,cy0=262;
+    if(AVI.complete&&AVI.naturalWidth){c.save();c.beginPath();c.arc(cx0,cy0,r,0,7);c.clip();c.drawImage(AVI,cx0-r,cy0-r,2*r,2*r);c.restore();c.strokeStyle=onMedia?'#ffffffd0':th.line;c.lineWidth=3;c.beginPath();c.arc(cx0,cy0,r,0,7);c.stroke()}
+    c.save();if(onMedia){c.shadowColor='#000a';c.shadowBlur=12}font(c,34,700);c.fillStyle=onMedia?'#fff':th.mut;c.textAlign='left';c.textBaseline='middle';c.fillText(S.handle,cx0+r+16,cy0+1);c.restore()}
+  if(R.bar&&R.scenes.length>1){const x0=66,x1=W-66,gap=8,n=R.scenes.length,tot=rTotal();let x=x0;const full=x1-x0-gap*(n-1);
+    R.scenes.forEach((s2,k)=>{const w=full*sdur(s2)/tot;c.fillStyle=onMedia?'#ffffff59':th.line;rr(c,x,196,w,7,3.5);c.fill();
+      const f=k<i?1:k===i?p:0;if(f>0){c.fillStyle=onMedia?'#fff':th.ac;rr(c,x,196,Math.max(7,w*f),7,3.5);c.fill()}x+=w+gap})}
+  if(R.trans==='fade'&&i>0&&local<0.22){c.save();c.globalAlpha=1-local/0.22;c.fillStyle=th.bg;c.fillRect(0,0,W,H);c.restore()}
+}
+function rDraw(){rcx.setTransform(1,0,0,1,0,0);drawReel(rcx,rT);const tot=rTotal();$('rSeek').max=Math.max(0.1,tot).toFixed(2);if(!rSeeking)$('rSeek').value=rT;$('rTime').textContent=rT.toFixed(1)+' / '+tot.toFixed(1)+'초'}
+let rSeeking=false;
+function syncVideos(){const cur=sceneAt(rT);
+  RVID.forEach((v,id)=>{if(!rPlaying||!cur||cur.sc.id!==id){if(!v.el.paused)v.el.pause()}});
+  if(cur&&cur.sc.kind==='video'){const v=RVID.get(cur.sc.id);if(v){const want=cur.sc.tin+cur.local;
+    if(Math.abs(v.el.currentTime-want)>(rPlaying?0.4:0.02)){try{v.el.currentTime=want}catch(e){}}
+    if(rPlaying&&v.el.paused)v.el.play().catch(()=>{})}}}
+function rTick(ts){if(!rPlaying)return;const dt=Math.min(0.1,(ts-rLast)/1000);rLast=ts;rT+=dt;
+  if(rT>=rTotal()){rT=0;rPlaying=false;$('rPlay').textContent='▶ 재생';syncVideos();rDraw();return}
+  syncVideos();rDraw();requestAnimationFrame(rTick)}
+function rPlay(on){rPlaying=on;$('rPlay').textContent=on?'❚❚ 정지':'▶ 재생';if(on){rLast=performance.now();requestAnimationFrame(rTick)}syncVideos()}
+$('rPlay').onclick=()=>{if(rBusy)return;if(!rPlaying&&rT>=rTotal()-0.05)rT=0;rPlay(!rPlaying)};
+$('rSeek').oninput=e=>{rSeeking=true;if(rPlaying)rPlay(false);rT=+e.target.value;const c=sceneAt(rT);if(c&&c.i!==R.cur){R.cur=c.i;rFields();rThumbs()}syncVideos();rDraw()};
+$('rSeek').onchange=()=>{rSeeking=false};
+function rThumbs(){const box=$('rScenes');box.innerHTML='';
+  R.scenes.forEach((sc,i)=>{const d=document.createElement('div');d.className='thumb'+(i===R.cur?' on':'');
+    const c=document.createElement('canvas');c.width=162;c.height=288;const k=c.getContext('2d');k.scale(.15,.15);
+    const keep=rT;drawReel(k,sceneStart(i)+Math.min(sdur(sc)*0.6,1));
+    d.appendChild(c);const nm={photo:'사진',video:'영상',card:'카드'}[sc.kind];
+    d.insertAdjacentHTML('beforeend',`<span class="n">${i+1} ${nm} · ${sdur(sc).toFixed(1)}s</span><span class="ops"><button data-o="up">↑</button><button data-o="dn">↓</button><button data-o="cp">⧉</button><button data-o="rm">✕</button></span>`);
+    d.onclick=e=>{const o=e.target.dataset.o;
+      if(o==='up'&&i>0){[R.scenes[i-1],R.scenes[i]]=[R.scenes[i],R.scenes[i-1]];R.cur=i-1}
+      else if(o==='dn'&&i<R.scenes.length-1){[R.scenes[i+1],R.scenes[i]]=[R.scenes[i],R.scenes[i+1]];R.cur=i+1}
+      else if(o==='cp'){if(sc.kind==='video'){toast('영상 장면은 복제할 수 없어요');return}const n=mkScene(sc.kind,Object.assign({},sc,{id:uid()}));if(RIMG.get(sc.id))RIMG.set(n.id,RIMG.get(sc.id));R.scenes.splice(i+1,0,n);R.cur=i+1}
+      else if(o==='rm'){R.scenes.splice(i,1);RIMG.delete(sc.id);const v=RVID.get(sc.id);if(v){v.el.pause();URL.revokeObjectURL(v.url);RVID.delete(sc.id)}R.cur=Math.max(0,Math.min(R.cur,R.scenes.length-1))}
+      else R.cur=i;
+      if(rPlaying)rPlay(false);rT=Math.min(sceneStart(R.cur)+0.5,Math.max(0,rTotal()-0.01));rAll()};
+    box.appendChild(d)});
+  $('rInfo').textContent=`장면 ${R.scenes.length}개 · 총 ${rTotal().toFixed(1)}초`;
+}
+let rtT;function rSoft(){syncVideos();rDraw();clearTimeout(rtT);rtT=setTimeout(()=>{rThumbs();rPersist()},300)}
+function rAll(){rFields();syncVideos();rDraw();rThumbs();rPersist()}
+function rPersist(){const o=Object.assign({},R,{scenes:R.scenes.map(s=>s.kind==='video'?Object.assign({},s,{img:null}):s)});
+  try{localStorage.setItem('ipm_reel',JSON.stringify(o))}catch(e){try{localStorage.setItem('ipm_reel',JSON.stringify(Object.assign({},o,{scenes:o.scenes.map(s=>Object.assign({},s,{img:null}))})))}catch(e2){}}}
+function photoData(src){return new Promise(res=>{const go=url=>{const im=new Image();im.onerror=()=>res(null);im.onload=()=>{const sc=Math.min(1,2160/Math.max(im.naturalWidth,im.naturalHeight));
+    const c=document.createElement('canvas');c.width=im.naturalWidth*sc;c.height=im.naturalHeight*sc;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.9))};im.src=url};
+  if(typeof src==='string'){go(src);return}const fr=new FileReader();fr.onerror=()=>res(null);fr.onload=()=>go(fr.result);fr.readAsDataURL(src)})}
+function rLoadImg(sc){return new Promise(res=>{if(!sc.img){res();return}const im=new Image();im.onload=()=>{RIMG.set(sc.id,im);res()};im.onerror=()=>res();im.src=sc.img})}
+async function rSetPhoto(sc,src){const d=await photoData(src);if(!d){toast('이 사진은 열 수 없어요');return false}sc.img=d;await rLoadImg(sc);return true}
+async function rAddPhotos(list){let n=0;for(const src of list){const sc=mkScene('photo',{dur:3,motion:['zoomin','panr','zoomout','panl'][n%4]});if(await rSetPhoto(sc,src)){R.scenes.splice(R.scenes.length&&R.scenes[R.scenes.length-1].kind==='card'&&R.scenes.length>1?R.scenes.length-1:R.scenes.length,0,sc);n++}}
+  if(n){R.cur=R.scenes.findIndex(s=>s.kind==='photo');rAll();toast(`사진 ${n}장 추가`)}}
+function rSetVideo(sc,file){return new Promise(res=>{const url=URL.createObjectURL(file),el=document.createElement('video');el.muted=true;el.playsInline=true;el.preload='auto';el.crossOrigin='anonymous';
+  let done=false;const fin=ok=>{if(done)return;done=true;if(!ok){URL.revokeObjectURL(url);toast('이 영상은 열 수 없어요');res(false);return}
+    const old=RVID.get(sc.id);if(old){old.el.pause();URL.revokeObjectURL(old.url)}RVID.set(sc.id,{el,url,dur:el.duration});sc.tin=0;sc.tout=Math.min(el.duration,6);el.onseeked=()=>{if(!rPlaying&&!rBusy){rDraw();clearTimeout(rtT);rtT=setTimeout(rThumbs,300)}};try{el.currentTime=0.05}catch(e){}res(true)};
+  el.onloadeddata=()=>fin(isFinite(el.duration)&&el.videoWidth>0);el.onerror=()=>fin(false);setTimeout(()=>fin(el.readyState>=2&&el.videoWidth>0),15000);el.src=url;el.load()})}
+function rFields(){const sc=R.scenes[R.cur],box=$('rFields');if(!sc){box.innerHTML='<div class="note">아래 "장면 추가"에서 사진·영상·카드를 넣어 주세요.</div>';return}
+  let h=`<div class="note">${R.cur+1}번 장면 · ${{photo:'사진',video:'영상 클립',card:'카드(글자만)'}[sc.kind]}</div>`;
+  if(sc.kind==='photo'&&!sc.raw)h+=`<label>사진</label><div class="drop" id="rDrop">${sc.img?'사진 바꾸기':'사진 선택'}</div><input type="file" id="rfImg" accept="image/*" hidden>`;
+  if(sc.kind==='video'){const v=RVID.get(sc.id),du=v?v.dur:0;
+    h+=`<label>영상</label><div class="drop" id="rDropV">${v?'영상 바꾸기':'영상 선택'}</div><input type="file" id="rfVid" accept="video/*" hidden>`;
+    if(v)h+=`<label>시작 지점 <b id="rTinV">${(+sc.tin).toFixed(1)}초</b></label><input type="range" data-f="tin" min="0" max="${du.toFixed(2)}" step="0.1" value="${sc.tin}">
+      <label>끝 지점 <b id="rToutV">${(+sc.tout).toFixed(1)}초</b> (원본 ${du.toFixed(1)}초)</label><input type="range" data-f="tout" min="0" max="${du.toFixed(2)}" step="0.1" value="${sc.tout}">`}
+  if(sc.kind!=='video')h+=`<label>표시 시간 <b id="rDurV">${(+sc.dur).toFixed(1)}초</b></label><input type="range" data-f="dur" min="1" max="8" step="0.5" value="${sc.dur}">`;
+  if(!sc.raw){h+=`<label>${sc.kind==='card'?'제목':'자막'}</label><textarea data-f="text">${esc(sc.text)}</textarea>`;
+    if(sc.kind==='card')h+=`<label>버튼 문구 (비우면 숨김)</label><input type="text" data-f="sub" value="${esc(sc.sub)}">`;
+    else h+=`<label style="display:flex;gap:6px;align-items:center;color:var(--tx)"><input type="checkbox" data-f="big" ${sc.big?'checked':''}>큰 제목으로 (훅·강조)</label>
+      <div class="row"><div><label>자막 위치</label><select data-f="pos"><option value="bottom">아래</option><option value="center">가운데</option><option value="top">위</option></select></div>
+      <div><label>화면 맞춤</label><select data-f="fit"><option value="cover">꽉 채우기</option><option value="contain">전체 보이기(흐린 배경)</option></select></div></div>`;
+    if(sc.kind==='photo')h+=`<label>움직임</label><select data-f="motion"><option value="zoomin">천천히 확대</option><option value="zoomout">천천히 축소</option><option value="panr">오른쪽으로</option><option value="panl">왼쪽으로</option><option value="none">없음</option></select>`}
+  else h+=`<div class="note">캐러셀에서 가져온 장면입니다. 글자는 게시글 모드에서 고친 뒤 다시 가져오세요.</div>`;
+  box.innerHTML=h;
+  box.querySelectorAll('select[data-f]').forEach(el=>el.value=sc[el.dataset.f]);
+  box.querySelectorAll('[data-f]').forEach(el=>el.oninput=()=>{const f=el.dataset.f;sc[f]=el.type==='checkbox'?el.checked:el.type==='range'?+el.value:el.value;
+    if(f==='tin'){if(sc.tin>sc.tout-0.3)sc.tout=Math.min((RVID.get(sc.id)||{dur:sc.tin+0.3}).dur,sc.tin+0.3);$('rTinV').textContent=sc.tin.toFixed(1)+'초';$('rToutV').textContent=sc.tout.toFixed(1)+'초';rT=sceneStart(R.cur)}
+    if(f==='tout'){if(sc.tout<sc.tin+0.3)sc.tin=Math.max(0,sc.tout-0.3);$('rTinV').textContent=sc.tin.toFixed(1)+'초';$('rToutV').textContent=sc.tout.toFixed(1)+'초';rT=sceneStart(R.cur)+Math.max(0,sdur(sc)-0.05)}
+    if(f==='dur')$('rDurV').textContent=sc.dur.toFixed(1)+'초';
+    if(f==='text'||f==='sub'||f==='big'||f==='pos'){const st=sceneStart(R.cur);if(rT<st+0.4||rT>st+sdur(sc))rT=st+Math.min(0.5,sdur(sc)-0.01)}
+    if(rPlaying)rPlay(false);rSoft()});
+  const dz=$('rDrop');if(dz){const fi=$('rfImg');dz.onclick=async()=>{if(canNativePick()){const a=await nativePick(false);if(a[0]&&await rSetPhoto(sc,a[0]))rAll()}else fi.click()};fi.onchange=async()=>{if(fi.files[0]&&await rSetPhoto(sc,fi.files[0]))rAll()}}
+  const dv=$('rDropV');if(dv){const fv=$('rfVid');dv.onclick=()=>fv.click();fv.onchange=async()=>{if(fv.files[0]){toast('영상 불러오는 중…');if(await rSetVideo(sc,fv.files[0])){rT=sceneStart(R.cur);rAll()}}}}
+}
+// 장면 추가
+$('rAddP').onclick=async()=>{if(canNativePick()){const a=await nativePick(true);if(a.length)rAddPhotos(a)}else $('rfPhotos').click()};
+$('rfPhotos').onchange=e=>{const fs=[...e.target.files].filter(f=>f.type.startsWith('image/')).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));e.target.value='';if(fs.length)rAddPhotos(fs)};
+$('rAddV').onclick=()=>$('rfVideos').click();
+$('rfVideos').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;toast('영상 불러오는 중…');let n=0;
+  for(const f of fs){const sc=mkScene('video',{fit:'cover'});if(await rSetVideo(sc,f)){const at=R.scenes.length>1&&R.scenes[R.scenes.length-1].kind==='card'?R.scenes.length-1:R.scenes.length;R.scenes.splice(at,0,sc);R.cur=at;n++}}
+  if(n){rT=sceneStart(R.cur);rAll();toast(`영상 ${n}개 추가`)}};
+$('rAddC').onclick=()=>{R.scenes.splice(R.cur+1,0,mkScene('card',{text:'문구를 입력하세요',dur:2}));R.cur=Math.min(R.cur+1,R.scenes.length-1);rT=sceneStart(R.cur)+0.5;rAll()};
+$('rImport').onclick=async()=>{await fontsReady();const n=S.slides.length,add=[];
+  for(let i=0;i<n;i++){const c=document.createElement('canvas');c.width=1080;c.height=1920;render(c.getContext('2d'),S.slides[i],1080,1920,i,n);
+    const sc=mkScene('photo',{raw:true,dur:i===0?2.5:3.5,img:c.toDataURL('image/jpeg',0.92)});await rLoadImg(sc);add.push(sc)}
+  const rest=R.scenes.filter(s=>!s.raw),pristine=rest.every(s=>s.kind==='card'&&START.some(x=>x.text===s.text));
+  R.scenes=pristine?add:add.concat(rest);R.cur=0;rT=0.5;rAll();toast(`캐러셀 ${n}장을 가져왔어요`)};
+const START=[{text:'이 게임,\n왜 재밌을까?'},{text:'여러분의 선택은?'}];
+$('rRes').onchange=e=>{R.res=+e.target.value;rPersist()};
+$('rTrans').onchange=e=>{R.trans=e.target.value;rSoft()};
+$('rBar').onchange=e=>{R.bar=e.target.checked;rSoft()};
+$('rBrand').onchange=e=>{R.brand=e.target.checked;rSoft()};
+document.querySelectorAll('.rtabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.rpane').forEach(p=>p.classList.toggle('on',p.id==='rp-'+b.dataset.t))});
+// ---------- MP4 내보내기 ----------
+function seekTo(v,t){return new Promise(res=>{t=Math.max(0,Math.min(t,(v.duration||t)-0.02));if(Math.abs(v.currentTime-t)<0.004&&v.readyState>=2&&!v.seeking){res();return}
+  let done=false;const fin=()=>{if(done)return;done=true;v.removeEventListener('seeked',fin);res()};v.addEventListener('seeked',fin);setTimeout(fin,2000);try{v.currentTime=t}catch(e){fin()}})}
+function prog(p,msg){$('rOv').style.display='flex';$('rBarIn').style.width=(p*100).toFixed(1)+'%';$('rOvMsg').textContent=msg}
+async function pickCodec(w,h,fps,br){if(!('VideoEncoder' in window)||typeof Mp4Muxer==='undefined')return null;
+  for(const codec of ['avc1.640028','avc1.4d0028','avc1.42e028','avc1.42001f']){for(const hw of ['no-preference','prefer-software']){
+    try{const cfg={codec,width:w,height:h,bitrate:br,framerate:fps,hardwareAcceleration:hw,avc:{format:'avc'}};const r=await VideoEncoder.isConfigSupported(cfg);if(r&&r.supported)return cfg}catch(e){}}}
+  return null}
+async function exportReel(){
+  if(rBusy)return;if(!R.scenes.length){toast('장면이 없어요');return}
+  const miss=R.scenes.findIndex(s=>(s.kind==='photo'&&!RIMG.get(s.id))||(s.kind==='video'&&!RVID.get(s.id)));
+  if(miss>=0){R.cur=miss;rAll();toast(`${miss+1}번 장면에 사진·영상이 없어요`);return}
+  if(rPlaying)rPlay(false);rBusy=true;rCancel=false;await fontsReady();
+  const fps=30,W=R.res===720?720:1080,H=W*16/9,tot=rTotal(),N=Math.max(1,Math.round(tot*fps));
+  const cvs=document.createElement('canvas');cvs.width=W;cvs.height=H;const c=cvs.getContext('2d');
+  const frameAt=async t=>{const cur=sceneAt(t);if(cur&&cur.sc.kind==='video'){const v=RVID.get(cur.sc.id);if(v)await seekTo(v.el,cur.sc.tin+cur.local)}
+    c.setTransform(W/1080,0,0,W/1080,0,0);drawReel(c,t)};
+  RVID.forEach(v=>v.el.pause());
+  let blob=null,ext='mp4',warn='';
+  try{
+    const cfg=await pickCodec(W,H,fps,W>=1080?9e6:5e6);
+    if(cfg){
+      prog(0,'영상 만드는 중… 0%');
+      const mux=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),video:{codec:'avc',width:W,height:H,frameRate:fps},fastStart:'in-memory'});
+      let err=null;const enc=new VideoEncoder({output:(ch,meta)=>mux.addVideoChunk(ch,meta),error:e=>{err=e}});enc.configure(cfg);
+      for(let i=0;i<N;i++){if(rCancel)throw new Error('cancel');if(err)throw err;
+        await frameAt(Math.min(tot-0.001,i/fps));
+        const fr=new VideoFrame(cvs,{timestamp:Math.round(i*1e6/fps),duration:Math.round(1e6/fps)});enc.encode(fr,{keyFrame:i%60===0});fr.close();
+        while(enc.encodeQueueSize>6){await new Promise(r=>setTimeout(r,8));if(err)throw err}
+        if(i%5===0){prog(i/N,`영상 만드는 중… ${Math.round(i/N*100)}%`);await new Promise(r=>setTimeout(r,0))}}
+      await enc.flush();if(err)throw err;enc.close();mux.finalize();blob=new Blob([mux.target.buffer],{type:'video/mp4'});
+    }else if(window.MediaRecorder&&cvs.captureStream){
+      // 대체 경로: 실시간 녹화
+      const mime=['video/mp4;codecs=avc1.640028','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'].find(m=>MediaRecorder.isTypeSupported(m));
+      if(!mime)throw new Error('nosupport');ext=mime.startsWith('video/mp4')?'mp4':'webm';if(ext==='webm')warn='이 기기는 MP4 인코딩을 지원하지 않아 WEBM으로 저장했어요. 인스타 업로드 전 변환이 필요해요.';
+      const st=cvs.captureStream(fps),rec=new MediaRecorder(st,{mimeType:mime,videoBitsPerSecond:W>=1080?9e6:5e6}),parts=[];rec.ondataavailable=e=>e.data.size&&parts.push(e.data);
+      const stopped=new Promise(r=>rec.onstop=r);await frameAt(0);rec.start(500);const t0=performance.now();
+      await new Promise((res,rej)=>{const step=async()=>{if(rCancel){rej(new Error('cancel'));return}const t=(performance.now()-t0)/1000;if(t>=tot){res();return}
+        const cur=sceneAt(t);RVID.forEach((v,id)=>{if(!cur||cur.sc.id!==id){if(!v.el.paused)v.el.pause()}});
+        if(cur&&cur.sc.kind==='video'){const v=RVID.get(cur.sc.id).el,want=cur.sc.tin+cur.local;if(Math.abs(v.currentTime-want)>0.4)v.currentTime=want;if(v.paused)v.play().catch(()=>{})}
+        c.setTransform(W/1080,0,0,W/1080,0,0);drawReel(c,t);prog(t/tot,`실시간 녹화 중… ${Math.round(t/tot*100)}%`);requestAnimationFrame(step)};step()});
+      rec.stop();await stopped;RVID.forEach(v=>v.el.pause());blob=new Blob(parts,{type:mime.split(';')[0]});
+    }else throw new Error('nosupport');
+  }catch(e){$('rOv').style.display='none';rBusy=false;RVID.forEach(v=>v.el.pause());syncVideos();rDraw();
+    toast(e&&e.message==='cancel'?'내보내기를 취소했어요':e&&e.message==='nosupport'?'이 브라우저는 영상 내보내기를 지원하지 않아요. PC 크롬에서 시도해 주세요.':'영상을 만들지 못했어요: '+(e&&e.message||e));return}
+  prog(1,'저장 중…');
+  const ok=await save(blob,`reel_${stamp()}.${ext}`);
+  $('rOv').style.display='none';rBusy=false;syncVideos();rDraw();
+  if(warn)toast(warn);else if(ok&&!window.AndroidBridge)toast(`저장 완료 · ${(blob.size/1048576).toFixed(1)}MB`);
+}
+$('bMp4').onclick=exportReel;$('rExport').onclick=exportReel;$('rOvCancel').onclick=()=>{rCancel=true};
+// ---------- 모드 전환 ----------
+function setMode(m){document.body.classList.toggle('reel',m==='reel');document.querySelectorAll('#mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));try{localStorage.setItem('ipm_mode',m)}catch(e){}
+  if(m==='reel'){rAll()}else{if(rPlaying)rPlay(false);all()}if(typeof hh==='function')hh()}
+document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+async function rInit(){let sv=null;try{sv=JSON.parse(localStorage.getItem('ipm_reel'))}catch(e){}
+  if(sv&&sv.scenes){R=Object.assign(R,sv);R.scenes=R.scenes.map(s=>mkScene(s.kind,s));await Promise.all(R.scenes.map(rLoadImg))}
+  if(!R.scenes.length)R.scenes=[mkScene('card',{text:START[0].text,dur:2}),mkScene('card',{text:START[1].text,sub:'팔로우하고 다음 후기 받기',dur:2.5})];
+  R.cur=Math.min(R.cur||0,R.scenes.length-1);$('rRes').value=R.res;$('rTrans').value=R.trans;$('rBar').checked=R.bar;$('rBrand').checked=R.brand;
+  let m='post';try{m=localStorage.getItem('ipm_mode')||'post'}catch(e){}if(m==='reel')setMode('reel')}
+
 // 안드로이드 앱 업데이트 (GitHub 저장소에서 새 버전 확인)
 (function(){const B=window.AndroidBridge;if(!B||!B.checkUpdate)return;$('updBox').hidden=false;const b=$('bUpd'),info=$('updInfo');
   const base=()=>{try{info.textContent='현재 버전: '+B.info()}catch(e){}b.textContent='업데이트 확인';b.className='btn';b.onclick=()=>{b.textContent='확인 중…';B.checkUpdate(false)}};
@@ -1485,8 +1759,9 @@ $('logo').src=AV;
 (async function(){let saved=null;try{saved=JSON.parse(localStorage.getItem('ipm'))}catch(e){}
   if(saved&&saved.slides&&saved.slides.length)await apply(saved);
   else{const p=PRESETS['보드게임 리뷰 (7장)']();S.slides=p.slides;sync();all()}
-  fontsReady().then(()=>{draw();thumbs()});
-  if(document.fonts&&document.fonts.addEventListener){let ft;document.fonts.addEventListener('loadingdone',()=>{clearTimeout(ft);ft=setTimeout(()=>{draw();thumbs()},150)})}
+  await rInit();
+  fontsReady().then(()=>{draw();thumbs();if(document.body.classList.contains('reel'))rAll()});
+  if(document.fonts&&document.fonts.addEventListener){let ft;document.fonts.addEventListener('loadingdone',()=>{clearTimeout(ft);ft=setTimeout(()=>{if(document.body.classList.contains('reel')){if(!rPlaying&&!rBusy){rDraw();rThumbs()}}else{draw();thumbs()}},150)})}
 })();
 </script>
 </body>

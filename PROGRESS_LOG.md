@@ -8,6 +8,6 @@
 - 동작 확인:
   - `python3 .claude/skills/ig-reel/hookscore.py <파일>` 실행됨 (훅 순위 출력)
   - `python3 .claude/skills/ig-reel/beats.py <파일> --target 30` 실행됨 (비트 시트 출력)
-- 미확인: 설치한 세션에서는 `/ig-reel` 슬래시 명령이 인식되지 않음 (`Unknown skill: ig-reel`). 새 세션에서 확인 필요.
+- `/ig-reel` 확인: 설치 직후에는 `Unknown skill: ig-reel` 오류가 났으나, 약 50분 뒤 같은 세션에서 스킬 목록에 `ig-*` 13개가 나타났고 `ig-reel` 호출 시 스킬 본문이 로드됨 (2026-11-23 08:05 UTC). 실제 릴스 대본 생성까지는 실행하지 않음.
 - 참고: README 예시는 "Proposals used to take me five hours. Twenty minutes now." 훅을 86점으로 표기하지만, 실제 `hookscore.py` 실행 결과는 51.2점(OK)이었음.
 - 미완료: `templates/voice.md`를 `~/.claude/instagram/voice.md`로 복사해 작성하는 단계는 하지 않음 (클라우드 컨테이너의 홈 디렉터리는 세션 종료 시 사라짐).

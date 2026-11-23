@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources><string name="app_name">AA 게시글 메이커</string>
+<style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+  <item name="android:statusBarColor">#fbf4e6</item><item name="android:navigationBarColor">#fbf4e6</item>
+  <item name="android:windowLightStatusBar">true</item><item name="android:windowBackground">@android:color/white</item>
+</style></resources>
